@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,6 +15,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _studentIdController = TextEditingController();
   final _emailController = TextEditingController();
   final _departmentController = TextEditingController();
+  final _mobileController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
@@ -23,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _studentIdController.dispose();
     _emailController.dispose();
     _departmentController.dispose();
+    _mobileController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -98,10 +101,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       return 'Please enter your full name';
                     }
 
+                    List<String> nameParts =
+                        value.trim().split(RegExp(r'\s+'));
+
+                    if (nameParts.length < 2) {
+                      return 'Please enter at least two parts of your name';
+                    }
+
                     if (!RegExp(
-                      r'^[a-zA-Z ]+$',
+                      r'^[A-Z][a-zA-Z]*(?:\.[a-zA-Z]*)?(?:\s+[A-Z][a-zA-Z]*(?:\.[a-zA-Z]*)?)+$',
                     ).hasMatch(value.trim())) {
-                      return 'Please enter a valid name';
+                      return 'Each name part must start with a capital letter';
                     }
 
                     return null;
@@ -169,6 +179,37 @@ class _RegisterPageState extends State<RegisterPage> {
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return 'Please enter your department';
+                    }
+
+                    return null;
+                  },
+                ),
+
+                const SizedBox(height: 18),
+
+                TextFormField(
+                  controller: _mobileController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(11),
+                  ],
+                  style: const TextStyle(
+                    color: Color(0xFF29232A),
+                  ),
+                  decoration: _inputDecoration(
+                    'Mobile Number',
+                    Icons.phone,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your mobile number';
+                    }
+
+                    if (!RegExp(
+                      r'^01[0-9]{9}$',
+                    ).hasMatch(value)) {
+                      return 'Mobile number must be 11 digits and start with 01';
                     }
 
                     return null;
