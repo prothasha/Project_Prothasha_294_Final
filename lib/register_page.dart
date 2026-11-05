@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -101,17 +100,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       return 'Please enter your full name';
                     }
 
-                    List<String> nameParts =
-                        value.trim().split(RegExp(r'\s+'));
-
-                    if (nameParts.length < 2) {
-                      return 'Please enter at least two parts of your name';
-                    }
-
                     if (!RegExp(
-                      r'^[A-Z][a-zA-Z]*(?:\.[a-zA-Z]*)?(?:\s+[A-Z][a-zA-Z]*(?:\.[a-zA-Z]*)?)+$',
+                      r'^[A-Z][a-z]+( [A-Z][a-z]+)+$',
                     ).hasMatch(value.trim())) {
-                      return 'Each name part must start with a capital letter';
+                      return 'Enter first and last name with capital first letters';
                     }
 
                     return null;
@@ -189,11 +181,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 TextFormField(
                   controller: _mobileController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(11),
-                  ],
+                  keyboardType: TextInputType.phone,
+                  maxLength: 11,
                   style: const TextStyle(
                     color: Color(0xFF29232A),
                   ),
@@ -202,14 +191,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     Icons.phone,
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Please enter your mobile number';
                     }
 
                     if (!RegExp(
                       r'^01[0-9]{9}$',
-                    ).hasMatch(value)) {
-                      return 'Mobile number must be 11 digits and start with 01';
+                    ).hasMatch(value.trim())) {
+                      return 'Mobile number must start with 01 and contain exactly 11 digits';
                     }
 
                     return null;
